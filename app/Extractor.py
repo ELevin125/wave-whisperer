@@ -1,30 +1,10 @@
 from scipy.io import wavfile
+from app.Utility import bits_to_string
 
 class Extractor:
     def __init__(self, audio_file, end_string = "^^^"):
         self.audio_file = audio_file
         self._end_string = end_string
-
-    @staticmethod
-    def bits_to_string(bit_list):
-        string = ""
-        for i in range(0, len(bit_list), 8):
-            # Extract 8 bits at a time and convert them to a number
-            bits = bit_list[i: i + 8]
-            bit_string = "".join(map(str, bits))
-            
-            # Remove any non-binary characters
-            bit_string = "".join(c for c in bit_string if c in "01")
-            
-            # Check if the filtered string is empty
-            if not bit_string:
-                break
-            
-            # Convert the number value to a character and append to the string
-            num_value = int(bit_string, 2)
-            character = chr(num_value)
-            string += character
-        return string
 
     def extract_message(self):
         audio_rate, audio_data = wavfile.read(self.audio_file)
@@ -42,7 +22,7 @@ class Extractor:
             extracted.append(bit1)
             extracted.append(bit2)
 
-        raw_message = self.bits_to_string(extracted)
+        raw_message = bits_to_string(extracted)
         # Only return the message before the "end" string
         message = raw_message.split(self._end_string)[0]
 
