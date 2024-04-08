@@ -1,9 +1,11 @@
 import wave
 
 class Embedder:
-    def __init__(self, audio_file):
+    def __init__(self, audio_file, end_string = "^^^"):
         self.audio_file = audio_file
         self.audio = wave.open(self.audio_file, mode="rb")
+
+        self._end_string = end_string
 
     @staticmethod
     def string_to_bits(string):
@@ -19,14 +21,8 @@ class Embedder:
     def embed_message(self, message):
         frame_bytes = bytearray(list(self.audio.readframes(self.audio.getnframes())))
 
-        # Append dummy data to fill out rest of the bytes
-        filler = ""
-        for i in range(int((len(frame_bytes) - (len(message) * 8 * 8)) / 8)):
-            filler += "#"
-        message += filler
-
-        # Convert text to bit array
-        bits = self.string_to_bits(message)
+        # Append the "end" string to know when to stop the message when extracting it again
+        bits = self.string_to_bits(message + self._end_string)
 
         # Modifies the 2 least significant bit (LSB) of the corresponding byte in frame_bytes.
         i = 0

@@ -1,8 +1,9 @@
 from scipy.io import wavfile
 
 class Extractor:
-    def __init__(self, audio_file):
+    def __init__(self, audio_file, end_string = "^^^"):
         self.audio_file = audio_file
+        self._end_string = end_string
 
     @staticmethod
     def bits_to_string(bit_list):
@@ -42,12 +43,7 @@ class Extractor:
             extracted.append(bit2)
 
         raw_message = self.bits_to_string(extracted)
-        # Remove the dummy filler characters
-        message = raw_message.split("###")[0]
+        # Only remove the message before the "end" string
+        message = raw_message.split(self._end_string)[0]
 
         return message
-
-# # Example usage:
-# audio_extractor = AudioExtractor("./embedded_audio.wav")
-# extracted_message = audio_extractor.extract_message()
-# print("Secret Message:", "\"", extracted_message, "\"")
