@@ -19,7 +19,6 @@ class Embedder:
         return list(bits)
 
     def embed_message(self, message, path):
-        print(message + self._end_string)
         frame_bytes = bytearray(list(self.audio.readframes(self.audio.getnframes())))
 
         # Append the "end" string to know when to stop the message when extracting it again
