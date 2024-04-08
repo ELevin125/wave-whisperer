@@ -45,5 +45,6 @@ class Extractor:
         raw_message = self.bits_to_string(extracted)
         # Only remove the message before the "end" string
         message = raw_message.split(self._end_string)[0]
+        print(message)
 
         return message

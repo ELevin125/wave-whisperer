@@ -18,7 +18,8 @@ class Embedder:
         bits = map(int, "".join(bit_list))
         return list(bits)
 
-    def embed_message(self, message):
+    def embed_message(self, message, path):
+        print(message + self._end_string)
         frame_bytes = bytearray(list(self.audio.readframes(self.audio.getnframes())))
 
         # Append the "end" string to know when to stop the message when extracting it again
@@ -32,10 +33,10 @@ class Embedder:
 
         modified_frame = bytes(frame_bytes)
 
-        self._write_to_file(modified_frame)
+        self._write_to_file(modified_frame, path)
 
-    def _write_to_file(self, modified_frame):
-        with wave.open("embedded_audio.wav", "wb") as fd:
+    def _write_to_file(self, modified_frame, path):
+        with wave.open(path, "wb") as fd:
             fd.setparams(self.audio.getparams())
             fd.writeframes(modified_frame)
 
